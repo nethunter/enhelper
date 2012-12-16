@@ -1,0 +1,22 @@
+{
+    "manifest_version": 2,
+    "name": "EnHelper",
+    "description": "Generic extension for Encounter helping functions",
+    "version": "0.0.1",
+    "permissions": [
+        "contextMenus",
+        "notifications",
+        "http://*/*",
+        "https://*/*"
+    ],
+    "background": {
+        "scripts": ["script.js"]
+    },
+    "browser_action": {
+        "default_title" : "EnHelper",
+        "default_icon": "enicon.png"
+    },
+    "web_accessible_resources": [
+        "enicon.png"
+    ]
+}
