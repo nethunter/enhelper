@@ -38,12 +38,28 @@ function sendGcmRequest(data) {
     req.setRequestHeader("Authorization", "key=AIzaSyAtlVSSkqqWCaosXFJhqz2pI4Cc-p6n7lM");
     req.send(data);
 
+    var notification = webkitNotifications.createNotification("enicon.png", "EnHelper", "Sending request to phone...");
+    notification.show();
+
+    var timeout = setTimeout(function(){
+        notification.close();
+    }, '10000');
     
     req.onreadystatechange = function() 
     { 
         // If the request completed, close the extension popup
         if (req.readyState == 4)
-            if (req.status != 200) alert("Failed sending!");
+            clearTimeout(timeout);
+            notification.close();
+            if (req.status == 200) {
+                notification = webkitNotifications.createNotification("enicon.png", "EnHelper", "Request to phone sent.");
+                notification.show();
+                timeout = setTimeout(function(){
+                    notification.close();
+                }, '10000');
+            } else {
+                webkitNotifications.createNotification("enicon.png", "EnHelper", "Failed sending to phone!").show();
+            }
     };
 
     return false;
