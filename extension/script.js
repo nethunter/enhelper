@@ -10,9 +10,14 @@ function genericOnClick(info, tab) {
 function prepareDataNavigate(data) {
     var basicData = {};
     basicData["app"] = enhelper_navigation_app;
+    data = data.trim();
     
-    if (data.match(/^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$/)) {
-        basicData["coord"] = data;
+    if (data.match(/^(\-?\d+(\.\d+)?),?\s*(\-?\d+(\.\d+)?)$/)) {
+        if (null == data.match(/,/)) {
+            data = data.replace(/\s/g, ',');
+        }
+        basicData["coord"] = data.replace(/\s/g, '');
+        console.log(data);
     } else {
         basicData["name"] = data;
     }
