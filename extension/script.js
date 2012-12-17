@@ -7,26 +7,52 @@ function genericOnClick(info, tab) {
   console.log("tab: " + JSON.stringify(tab));
 }
 
-var openUrl = chrome.contextMenus.create({
-    "title": "Open URL on Mobile...", 
-    "contexts":["page", "selection", "link", "image"],
-    "onclick": genericOnClick
-});
-
-function sendGcmRequest(data) {
-    var req = new XMLHttpRequest();
-    req.open("POST", "https://android.googleapis.com/gcm/send", true);
-
-    var basicData = {
-        "app": enhelper_navigation_app
-    };
+function prepareDataNavigate(data) {
+    var basicData = {};
+    basicData["app"] = enhelper_navigation_app;
     
-    if (data.match("^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$")) {
+    if (data.match(/^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$/)) {
         basicData["coord"] = data;
     } else {
         basicData["name"] = data;
     }
 
+    return basicData;    
+}
+
+function prepareDataOpen(data) {
+    var basicData = {};
+    basicData["app"] = "open";
+    basicData["url"] = data;
+
+    return basicData;    
+}
+
+function prepareDataCall(data) {
+    var basicData = {};
+    basicData["app"] = "call";
+    basicData["number"] = data;
+
+    return basicData;    
+}
+
+function sendGcmRequest(type, data) {
+    var req = new XMLHttpRequest();
+    req.open("POST", "https://android.googleapis.com/gcm/send", true);
+
+    var basicData;
+    switch(type) {
+        case "navigate":
+            basicData = prepareDataNavigate(data);
+            break;
+        case "open":
+            basicData = prepareDataOpen(data);
+            break;
+        case "call":
+            basicData = prepareDataCall(data);
+            break;
+    }
+        
     var data = JSON.stringify({
         "data": basicData,
         "registration_ids": [
@@ -65,20 +91,52 @@ function sendGcmRequest(data) {
     return false;
 }
 
-function navigateOnClick(info, tab) {
-    sendGcmRequest(info.selectionText);
-}
+// Define all menu items
+
+// Open a remote URL on mobile
+chrome.contextMenus.create({
+    "title": "Open page on mobile...", 
+    "contexts":["page", "selection", "link", "image"],
+    "onclick": function (info, tab) {
+        sendGcmRequest("open", info.pageUrl);
+    }
+});
+
+// Open a remote image on mobile
+chrome.contextMenus.create({
+    "title": "Open image on Mobile...", 
+    "contexts":["image"],
+    "onclick": function (info, tab) {
+        sendGcmRequest("open", info.srcUrl);
+    }
+});
 
 // Create a parent item and two children.
-var parent = chrome.contextMenus.create({
+chrome.contextMenus.create({
     "title": "Navigate to %s...", 
     "contexts":["selection"],
-    "onclick": navigateOnClick
+    "onclick": function(info, tab) {
+        sendGcmRequest("navigate", info.selectionText);
+    }
 });
-/* var child1 = chrome.contextMenus.create(
-  {"title": "Coordinates", "parentId": parent, "onclick": genericOnClick, "contexts": ["selection"]});
-var child2 = chrome.contextMenus.create(
-  {"title": "Name", "parentId": parent, "onclick": genericOnClick, "contexts": ["selection"]}); */
+
+// Create a parent item and two children.
+chrome.contextMenus.create({
+    "title": "Call %s...", 
+    "contexts":["selection"],
+    "onclick": function(info, tab) {
+        sendGcmRequest("call", info.selectionText);
+    }
+});
+
+// Create a parent item and two children.
+chrome.contextMenus.create({
+    "title": "TinEye Image...", 
+    "contexts":["image"],
+    "onclick": function(info, tab) {
+        chrome.tabs.create({"url": "http://www.tineye.com/search?url=" + info.srcUrl});
+    }
+});
 
 // Create some radio items.
 function radioOnClick(info, tab) {

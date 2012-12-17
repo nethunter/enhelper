@@ -36,16 +36,42 @@ public class GCMIntentService extends GCMBaseIntentService {
 	      
 	      if ("waze".equals(app)) {
 		      final String coord = intent.getStringExtra("coord");
-		      if (coord.equals("")) {
+		      if (coord == null) {
 			      final String name = intent.getStringExtra("name");
 			      navigateWithWazeByName(name);
 		      } else {
 		    	  navigateWithWazeByCoord(coord);
 		      }
+	      } else if ("call".equals(app)) {
+		      final String number = intent.getStringExtra("number");
+	    	  callNumber(number);	    	  
+	      } else if ("open".equals(app)) {
+		      final String url = intent.getStringExtra("url");
+	    	  openBasicUrl(url);
 	      }
 	    }		
 	}
 
+	private void callNumber(String number) {
+		try {
+			Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+		} catch (ActivityNotFoundException ex) {
+			ex.printStackTrace();
+		}
+	}	
+
+	private void openBasicUrl(String url) {
+		try {
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+		} catch (ActivityNotFoundException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
 	private void navigateWithWazeByName(String name) {
 		navigateWithWaze("waze://?q=" + name);
 	}
