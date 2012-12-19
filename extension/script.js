@@ -25,22 +25,6 @@ function prepareDataNavigate(data) {
     return basicData;    
 }
 
-function prepareDataOpen(data) {
-    var basicData = {};
-    basicData["app"] = "open";
-    basicData["url"] = data;
-
-    return basicData;    
-}
-
-function prepareDataCall(data) {
-    var basicData = {};
-    basicData["app"] = "call";
-    basicData["number"] = data;
-
-    return basicData;    
-}
-
 function sendGcmRequest(type, data) {
     var req = new XMLHttpRequest();
     req.open("POST", "https://android.googleapis.com/gcm/send", true);
@@ -51,17 +35,30 @@ function sendGcmRequest(type, data) {
             basicData = prepareDataNavigate(data);
             break;
         case "open":
-            basicData = prepareDataOpen(data);
+            basicData = {
+                "app": "open",
+                "url": data
+            }
             break;
+        case "copy":
+            basicData = {
+                "app": "copy",
+                "clipboard": data
+            }
+            break;            
         case "call":
-            basicData = prepareDataCall(data);
+            basicData = {
+                "app": "call",
+                "number": data
+            }
             break;
     }
         
     var data = JSON.stringify({
         "data": basicData,
         "registration_ids": [
-            "APA91bHg0SuPElQnRhia0S1zztFLr322L2hfyC5xbTMXRPKrKUQ0b9ExwhTlnhoif24ibJLtKcz-Tp-rAlsXdXjoWDMutTmBcPxCrXhJOzWpSOtVQmLsXrMj9mtQv-F0_GoQYC8stLFnUiwsLAhQ9Ih-Z-hLNYfNpQ"
+            "APA91bHg0SuPElQnRhia0S1zztFLr322L2hfyC5xbTMXRPKrKUQ0b9ExwhTlnhoif24ibJLtKcz-Tp-rAlsXdXjoWDMutTmBcPxCrXhJOzWpSOtVQmLsXrMj9mtQv-F0_GoQYC8stLFnUiwsLAhQ9Ih-Z-hLNYfNpQ",
+            "APA91bH3ZwpUS86A3amAo4b4wHCeLNaLhndSa-mBVYx0oadH68PnyPMhhA-cBy9Uz7WOGCAizD4iM53lJk8ARtrLgibPxg8XCLnrN8Se_THEKWrUZI9CVonn4BnZwQLWBPI8NZt-7p2nXPyiNBXtS_pYJGQAzuWByw"
         ]
     });
 
@@ -133,6 +130,16 @@ chrome.contextMenus.create({
         sendGcmRequest("call", info.selectionText);
     }
 });
+
+// Create a parent item and two children.
+chrome.contextMenus.create({
+    "title": "Copy %s to mobile...", 
+    "contexts":["selection"],
+    "onclick": function(info, tab) {
+        sendGcmRequest("copy", info.selectionText);
+    }
+});
+
 
 // Create a parent item and two children.
 chrome.contextMenus.create({
