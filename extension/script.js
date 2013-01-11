@@ -61,7 +61,8 @@ function sendGcmRequest(type, data) {
     var data = JSON.stringify({
         "data": basicData,
         "registration_ids": [
-            "APA91bHg0SuPElQnRhia0S1zztFLr322L2hfyC5xbTMXRPKrKUQ0b9ExwhTlnhoif24ibJLtKcz-Tp-rAlsXdXjoWDMutTmBcPxCrXhJOzWpSOtVQmLsXrMj9mtQv-F0_GoQYC8stLFnUiwsLAhQ9Ih-Z-hLNYfNpQ"
+            "APA91bEdCQIr4W8dw7l2JFrFVrEnYJltKIhBxcoOUonEcHjsl9c62IRix7UdX8hPBf7YbZOuuYWlS5ZCFBszV6iN6lGQPKOFtxNZhhPGB9a0SLUAl0t2bsPPsYDmcNF7esb71I6kRlu2hmrmpZAky_-VVLPT0RScbQ", // David Phone
+            "APA91bFDAONTdOBew7Wtx5LMqmUgKMhBCw-gReLsDku7sJ9jNsc9KTLU9tLWfWf9QKxGNzodC_msy7wrU6PfsIGyWdGWGISY8IJ8KW8A4JSlFYsOE9O0kjPMSOJ9HnObGleA5KUHUfBH0VRMIFyUigMeEKhzv9mgFw" // David Tablet
         ]
     });
 

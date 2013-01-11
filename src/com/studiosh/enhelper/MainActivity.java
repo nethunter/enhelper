@@ -1,15 +1,14 @@
 package com.studiosh.enhelper;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gcm.GCMRegistrar;
 
@@ -36,10 +35,13 @@ public class MainActivity extends Activity {
 		final String regId = GCMRegistrar
 				.getRegistrationId(this);
 		if (regId.equals("")) {
-			GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
+			final String regId = GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
 		} else {
 			Log.v(TAG, "Already registered as " + regId);
 		}		
+		
+		EditText edit_registation_id = (EditText) findViewById(R.id.edit_registration_id);
+		edit_registation_id.setText(regId);
 	}
 
 	@Override

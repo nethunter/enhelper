@@ -20,4 +20,17 @@
         android:layout_centerHorizontal="true"
         android:text="@string/register" />
 
+    <EditText
+        android:id="@+id/edit_registration_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_register"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="41dp"
+        android:ems="10"
+        android:inputType="textMultiLine" >
+
+        <requestFocus />
+    </EditText>
+
 </RelativeLayout>

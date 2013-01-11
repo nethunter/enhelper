@@ -6,5 +6,6 @@
     <string name="menu_settings">Settings</string>
     <string name="navigate">Navigate</string>
     <string name="register">Register</string>
+    <string name="registration_id">Registration ID</string>
 
 </resources>
