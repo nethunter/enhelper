@@ -1,10 +1,15 @@
 package com.studiosh.enhelper;
 
+import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
@@ -44,7 +49,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 		      }
 	      } else if ("call".equals(app)) {
 		      final String number = intent.getStringExtra("number");
-	    	  callNumber(number);	    	  
+	    	  callNumber(number);
+	      } else if ("copy".equals(app)) {
+	    	  final String clipboard = intent.getStringExtra("clipboard");
+	    	  copyToClipboard(clipboard);
 	      } else if ("open".equals(app)) {
 		      final String url = intent.getStringExtra("url");
 	    	  openBasicUrl(url);
@@ -52,6 +60,31 @@ public class GCMIntentService extends GCMBaseIntentService {
 	    }		
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void copyToCliboardHC(String clipboardData) {
+		ClipboardManager clipboard = (ClipboardManager)
+		        getSystemService(Context.CLIPBOARD_SERVICE);
+		ClipData clip = ClipData.newPlainText("simple text", clipboardData);
+		clipboard.setPrimaryClip(clip);		
+	}
+	
+    @SuppressWarnings("deprecation")	
+	private void copyToCliboardPreHC(String clipboardData) {
+		android.text.ClipboardManager clipboard = (android.text.ClipboardManager) 
+	    		getSystemService(Context.CLIPBOARD_SERVICE);
+	    clipboard.setText(clipboardData);		
+	}
+
+	private void copyToClipboard(String clipboardData) {
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	    	copyToCliboardHC(clipboardData);
+	    } else {
+	    	copyToCliboardPreHC(clipboardData);
+	    }
+	    
+	    Toast.makeText(getApplicationContext(), "Text copied to clipboard", Toast.LENGTH_LONG).show();
+	}
+	
 	private void callNumber(String number) {
 		try {
 			Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));

@@ -32,10 +32,11 @@ public class MainActivity extends Activity {
 
 		GCMRegistrar.checkDevice(this);
 		GCMRegistrar.checkManifest(this);
-		final String regId = GCMRegistrar
+		String regId = GCMRegistrar
 				.getRegistrationId(this);
 		if (regId.equals("")) {
-			final String regId = GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
+			GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
+			regId = GCMRegistrar.getRegistrationId(this);
 		} else {
 			Log.v(TAG, "Already registered as " + regId);
 		}		

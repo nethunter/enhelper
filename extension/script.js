@@ -25,22 +25,6 @@ function prepareDataNavigate(data) {
     return basicData;    
 }
 
-function prepareDataOpen(data) {
-    var basicData = {};
-    basicData["app"] = "open";
-    basicData["url"] = data;
-
-    return basicData;    
-}
-
-function prepareDataCall(data) {
-    var basicData = {};
-    basicData["app"] = "call";
-    basicData["number"] = data;
-
-    return basicData;    
-}
-
 function sendGcmRequest(type, data) {
     var req = new XMLHttpRequest();
     req.open("POST", "https://android.googleapis.com/gcm/send", true);
@@ -51,10 +35,22 @@ function sendGcmRequest(type, data) {
             basicData = prepareDataNavigate(data);
             break;
         case "open":
-            basicData = prepareDataOpen(data);
+            basicData = {
+                "app": "open",
+                "url": data
+            }
             break;
+        case "copy":
+            basicData = {
+                "app": "copy",
+                "clipboard": data
+            }
+            break;            
         case "call":
-            basicData = prepareDataCall(data);
+            basicData = {
+                "app": "call",
+                "number": data
+            }
             break;
     }
         
@@ -134,6 +130,16 @@ chrome.contextMenus.create({
         sendGcmRequest("call", info.selectionText);
     }
 });
+
+// Create a parent item and two children.
+chrome.contextMenus.create({
+    "title": "Copy %s to mobile...", 
+    "contexts":["selection"],
+    "onclick": function(info, tab) {
+        sendGcmRequest("copy", info.selectionText);
+    }
+});
+
 
 // Create a parent item and two children.
 chrome.contextMenus.create({
