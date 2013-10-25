@@ -1,5 +1,10 @@
 package com.studiosh.enhelper;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +13,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.gcm.GCMRegistrar;
 
@@ -19,30 +23,39 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		Button btn_navigate = (Button) findViewById(R.id.btn_navigate);
-		btn_navigate.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.d(TAG, "Button pressed!");
-				// navigateWithWazeByName("הבושם, אשדוד");
-				// navigateWithWazeByCoord("31.820252,34.662541");
-			}
-		});
-
+		
 		GCMRegistrar.checkDevice(this);
 		GCMRegistrar.checkManifest(this);
-		String regId = GCMRegistrar
+		final String regId = GCMRegistrar
 				.getRegistrationId(this);
 		if (regId.equals("")) {
 			GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
 			regId = GCMRegistrar.getRegistrationId(this);
 		} else {
 			Log.v(TAG, "Already registered as " + regId);
-		}		
+		}
 		
 		EditText edit_registation_id = (EditText) findViewById(R.id.edit_registration_id);
 		edit_registation_id.setText(regId);
+		
+		Button btnAdd = (Button) findViewById(R.id.btnAddPhone);
+		btnAdd.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "Button pressed!");
+				Log.d(TAG, "Found value ".concat(regId));
+				
+			   URL url = new URL("http://www.android.com/");
+			   HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+			   try {
+			     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+			    finally {
+			     urlConnection.disconnect();
+			   }
+				 }
+				
+			}
+		});
 	}
 
 	@Override
