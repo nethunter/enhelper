@@ -48,17 +48,24 @@ public class MainActivity extends Activity {
 				Log.d(TAG, "Button pressed!");
 				Log.d(TAG, "Found value ".concat(finalRegId));
 				
-				URL url = new URL("http://vps.studiosh.com/en/basic.php?add=".concat(finalRegId));
-				HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-				
+				URL url;
 				try {
-					InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-				} catch (Exception e) {
+					url = new URL("http://vps.studiosh.com/en/basic.php?add=".concat(finalRegId));
+					HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+					
+					try {
+						InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						urlConnection.disconnect();
+					}
+					
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-					urlConnection.disconnect();
-				}
+					e1.printStackTrace();
+				}				
 			}
 		});
 	}
