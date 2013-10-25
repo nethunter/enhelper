@@ -64,15 +64,12 @@ function sendGcmRequest(type, data) {
                 "app": "call",
                 "number": data
             }
-            
-            ids = window.enHelperData.phone;
-            
             break;
     }
         
     var data = JSON.stringify({
         "data": basicData,
-        "registration_ids": ids
+        "registration_ids": 
     });
 
     req.setRequestHeader("Content-type", "application/json");

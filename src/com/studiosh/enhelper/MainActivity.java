@@ -3,6 +3,7 @@ package com.studiosh.enhelper;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.app.Activity;
@@ -26,7 +27,7 @@ public class MainActivity extends Activity {
 		
 		GCMRegistrar.checkDevice(this);
 		GCMRegistrar.checkManifest(this);
-		final String regId = GCMRegistrar
+		String regId = GCMRegistrar
 				.getRegistrationId(this);
 		if (regId.equals("")) {
 			GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
@@ -34,6 +35,8 @@ public class MainActivity extends Activity {
 		} else {
 			Log.v(TAG, "Already registered as " + regId);
 		}
+		
+		final String finalRegId = regId;
 		
 		EditText edit_registation_id = (EditText) findViewById(R.id.edit_registration_id);
 		edit_registation_id.setText(regId);
@@ -43,17 +46,19 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "Button pressed!");
-				Log.d(TAG, "Found value ".concat(regId));
+				Log.d(TAG, "Found value ".concat(finalRegId));
 				
-			   URL url = new URL("http://www.android.com/");
-			   HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-			   try {
-			     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-			    finally {
-			     urlConnection.disconnect();
-			   }
-				 }
+				URL url = new URL("http://vps.studiosh.com/en/basic.php?add=".concat(finalRegId));
+				HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 				
+				try {
+					InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					urlConnection.disconnect();
+				}
 			}
 		});
 	}
